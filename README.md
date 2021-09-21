@@ -5,6 +5,6 @@ Dash app for voc distribution visualization
 python app.py
 ```
 # interface
-![preview](https://github.com/Wenzha0Wu/voc-inspector/tree/main/assets/preview.png)
+![preview](./assets/preview.png)
 # download animation
-![animation](https://github.com/Wenzha0Wu/voc-inspector/tree/main/assets/animation.gif)
+![animation](./assets/animation.gif)
