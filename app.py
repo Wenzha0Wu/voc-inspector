@@ -11,8 +11,12 @@ from datetime import date, timedelta, datetime
 import math
 import xarray as xr
 import plotly.graph_objects as go
+import PIL
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+
+#PIL.Image.MAX_IMAGE_PIXELS=None
+img = PIL.Image.open('./assets/yanshan_1-16.jpg')
 
 nc_obs = xr.open_dataset('./data_obs_example.nc')
 nc_pred = xr.open_dataset('./data_pred_example.nc')
@@ -99,7 +103,7 @@ def func(n_clicks, select_mode, dump_st_date, dump_ed_date):
                         z= df[tick, :, :],
                         x=lon[select_mode],
                         y=lat[select_mode],
-                        opacity=1,
+                        opacity=0.85,
                         contours_coloring='heatmap',
                         zmin=0,
                         zmax=6,
@@ -119,7 +123,7 @@ def func(n_clicks, select_mode, dump_st_date, dump_ed_date):
                 z= df[st_frame, :, :],
                 x=lon[select_mode],
                 y=lat[select_mode],
-                opacity=1,
+                opacity=0.85,
                 contours_coloring='heatmap',
                 zmin=0,
                 zmax=6,
@@ -157,6 +161,19 @@ def func(n_clicks, select_mode, dump_st_date, dump_ed_date):
                 ]
             ),
             frames=frames,
+        )
+        fig.add_layout_image(
+                    dict(
+                        source=img,
+                        xref="x",
+                        yref="y",
+                        x=lon[select_mode][0],
+                        y=lat[select_mode][-1],
+                        sizex=lon[select_mode][-1] - lon[select_mode][0],
+                        sizey=lat[select_mode][-1] - lat[select_mode][0],
+                        sizing="stretch",
+                        opacity=0.8,
+                        layer="below")
         )
         buffer = io.StringIO()
         fig.write_html(buffer)
@@ -290,7 +307,7 @@ def update_heatmap(select_hour, select_mode):
             z= df[select_hour, :, :],
             x=lon[select_mode],
             y=lat[select_mode],
-            opacity=1,
+            opacity=0.85,
             contours_coloring='heatmap',
             zmin=0,
             zmax=6,
@@ -298,7 +315,20 @@ def update_heatmap(select_hour, select_mode):
             colorbar_title=dict(text="VOCs(mg/m3)"),
             hovertemplate="lat:%{y}<br>lon:%{x}<br>voc:%{z}<extra></extra>"
         ),
-        )
+    )
+    fig.add_layout_image(
+                dict(
+                    source=img,
+                    xref="x",
+                    yref="y",
+                    x=lon[select_mode][0],
+                    y=lat[select_mode][-1],
+                    sizex=lon[select_mode][-1] - lon[select_mode][0],
+                    sizey=lat[select_mode][-1] - lat[select_mode][0],
+                    sizing="stretch",
+                    opacity=0.8,
+                    layer="below")
+    )
     fig.update_layout(
         title='VOCs concentration across area on {}'.format((st_date[select_mode] + timedelta(hours=select_hour)).isoformat(sep=' ')),
         xaxis_title="lon(°)",
